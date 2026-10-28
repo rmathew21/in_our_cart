@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/* Palette: market-produce greens with a gold price-tag accent. Always dark. */
+:root {
+  --paper: #0f1712;
+  --surface: #18231c;
+  --ink: #e5ede6;
+  --muted: #93a598;
+  --line: #29382e;
+  --leaf: #5cc98a;
+  --leaf-ink: #072112;
+  --tag: #3d3514;
+  --tag-ink: #f7dd72;
+  --danger: #ff8a80;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-leaf: var(--leaf);
+  --color-leaf-ink: var(--leaf-ink);
+  --color-tag: var(--tag);
+  --color-tag-ink: var(--tag-ink);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+  font-feature-settings: "tnum" 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--leaf);
+  outline-offset: 2px;
+}
+
+/* ---- Check-off moment --------------------------------------------------- */
+
+/* Checkmark draws in when an item is checked. */
+@keyframes check-draw {
+  from { stroke-dashoffset: 18; }
+  to { stroke-dashoffset: 0; }
+}
+.check-draw path {
+  stroke-dasharray: 18;
+  animation: check-draw 180ms ease-out both;
+}
+
+/* The circle gives a small bounce when filled. */
+@keyframes check-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.check-pop { animation: check-pop 260ms ease-out; }
+
+/* Strikethrough that draws left to right (and undraws when unchecked).
+   Rows that mount already struck don't animate. */
+.strike {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 55%;
+  background-size: 0% 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: background-size 240ms ease-out;
+}
+.strike[data-struck="true"] { background-size: 100% 2px; }
+
+/* After the strike, the row folds away before moving to the other section. */
+.row-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+@keyframes row-fold {
+  to { grid-template-rows: 0fr; opacity: 0; }
+}
+.row-leave { animation: row-fold 180ms ease-in 280ms forwards; }
+
+/* The row that just moved gets a brief highlight in its new section. */
+@keyframes row-arrive {
+  from { background-color: color-mix(in oklab, var(--leaf) 18%, var(--surface)); transform: translateY(-6px); }
+  to { background-color: var(--surface); transform: translateY(0); }
+}
+.row-arrive { animation: row-arrive 700ms ease-out; }
+
+/* ---- Toasts --------------------------------------------------------------- */
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.toast-in { animation: toast-in 160ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .check-draw path, .check-pop, .toast-in, .row-arrive, .row-leave { animation: none; }
+  .strike { transition: none; }
+}
