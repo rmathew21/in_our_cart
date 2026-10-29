@@ -402,7 +402,7 @@ export function ShoppingList({ initialItems, listName }: Props) {
         ) : (
           <>
             <section aria-labelledby="intro-heading" className="mt-6">
-              <h2 id="intro-heading" className="font-display text-[1.9rem] font-extrabold leading-[1.08] tracking-tight">
+              <h2 id="intro-heading" className="font-display text-center text-[1.9rem] font-extrabold leading-[1.08] tracking-tight">
                 One list for everyone at home
               </h2>
               <p className="mt-2.5 text-muted">
