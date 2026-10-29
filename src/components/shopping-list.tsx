@@ -7,6 +7,7 @@ import { loadDeviceItems, saveDeviceItems } from "@/lib/device-storage";
 import type { ActionResult, Item } from "@/lib/types";
 import { AddItemForm } from "./add-item-form";
 import { ItemRow } from "./item-row";
+import { PhoneIcon } from "./icons";
 import { Logo } from "./logo";
 import { SaveDialog, type SaveMode } from "./save-dialog";
 import { useToast } from "./toast";
@@ -313,54 +314,140 @@ export function ShoppingList({ initialItems, listName }: Props) {
         : "Nothing yet"
       : `${active.length} to get`;
 
-  return (
-    <div className="mx-auto min-h-dvh max-w-xl pb-[calc(env(safe-area-inset-bottom)+5rem)]">
-      <header className="sticky top-0 z-20 border-b border-line bg-paper/95 px-4 pb-2 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur">
-        <div className="mb-3 flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <h1>
-              <Logo />
-            </h1>
-            {listName ? <p className="mt-1 truncate pl-12 text-sm text-muted">{listName}</p> : null}
-          </div>
-          <p className="text-sm font-medium text-muted" aria-live="polite">
-            {countLabel}
-          </p>
-        </div>
-        <AddItemForm onAdd={handleAdd} />
+  // return (
+  //   <div className="mx-auto min-h-dvh max-w-xl pb-[calc(env(safe-area-inset-bottom)+5rem)]">
+  //     <header className="sticky top-0 z-20 border-b border-line bg-paper/95 px-4 pb-2 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur">
+  //       <div className="mb-3 flex items-center justify-between gap-4">
+  //         <div className="min-w-0">
+  //           <h1>
+  //             <Logo />
+  //           </h1>
+  //           {listName ? <p className="mt-1 truncate pl-12 text-sm text-muted">{listName}</p> : null}
+  //         </div>
+  //         <p className="text-sm font-medium text-muted" aria-live="polite">
+  //           {countLabel}
+  //         </p>
+  //       </div>
+  //       <AddItemForm onAdd={handleAdd} />
+  //     </header>
+
+  //     <main className="px-4">
+  //       {!saved ? (
+  //         <section
+  //           aria-labelledby="save-heading"
+  //           className="mt-5 rounded-2xl border-2 border-leaf/40 bg-surface p-4"
+  //         >
+  //           <h2 id="save-heading" className="font-display text-lg font-bold">
+  //             Only saved on this device
+  //           </h2>
+  //           <p className="mt-1 text-sm text-muted">
+  //             Save it with a list name and PIN to open it on your phone, laptop, or anyone else&apos;s in your
+  //             household.
+  //           </p>
+  //           <div className="mt-4 flex flex-wrap gap-2">
+  //             <button
+  //               type="button"
+  //               onClick={() => setSaveMode("signup")}
+  //               className="h-12 flex-1 rounded-xl bg-leaf px-4 font-semibold text-leaf-ink"
+  //             >
+  //               Save my list
+  //             </button>
+  //             <button
+  //               type="button"
+  //               onClick={() => setSaveMode("login")}
+  //               className="h-12 flex-1 rounded-xl border border-line px-4 font-semibold"
+  //             >
+  //               Log in
+  //             </button>
+  //           </div>
+  //         </section>
+  //       ) : null}
+
+    return (
+    <div className="mx-auto flex min-h-dvh max-w-xl flex-col">
+      <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-line bg-paper/95 px-4 pb-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] backdrop-blur">
+        <h1>
+          <Logo />
+        </h1>
+        {saved ? (
+          <form action={logOut}>
+            <button type="submit" className="h-11 rounded-xl border border-line px-4 text-[15px] font-semibold">
+              Log out
+            </button>
+          </form>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setSaveMode("login")}
+            className="h-11 rounded-xl border border-line px-4 text-[15px] font-semibold"
+          >
+            Log in
+          </button>
+        )}
       </header>
 
-      <main className="px-4">
-        {!saved ? (
-          <section
-            aria-labelledby="save-heading"
-            className="mt-5 rounded-2xl border-2 border-leaf/40 bg-surface p-4"
-          >
-            <h2 id="save-heading" className="font-display text-lg font-bold">
-              Only saved on this device
-            </h2>
-            <p className="mt-1 text-sm text-muted">
-              Save it with a list name and PIN to open it on your phone, laptop, or anyone else&apos;s in your
-              household.
+      <main className="flex-1 px-4">
+        {saved ? (
+          <div className="mt-5 flex items-end justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-muted">Shared list</p>
+              <p className="truncate font-display text-[1.65rem] font-extrabold leading-tight tracking-tight">
+                {listName}
+              </p>
+            </div>
+            <p className="shrink-0 pb-1 text-sm font-semibold text-muted" aria-live="polite">
+              {countLabel}
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+          </div>
+        ) : (
+          <>
+            <section aria-labelledby="intro-heading" className="mt-6">
+              <h2 id="intro-heading" className="font-display text-[1.9rem] font-extrabold leading-[1.08] tracking-tight">
+                One list for everyone at home
+              </h2>
+              <p className="mt-2.5 text-muted">
+                Anyone in your household can add what you need, from wherever they are. Whoever heads to the store has
+                the complete list.
+              </p>
+            </section>
+
+            <section aria-labelledby="save-heading" className="mt-5 rounded-2xl border border-line bg-surface p-4">
+              <div className="flex items-start gap-3">
+                <PhoneIcon className="mt-0.5 h-5 w-5 shrink-0 text-tag-ink" />
+                <div>
+                  <h2 id="save-heading" className="font-semibold">
+                    Saved on this device only
+                  </h2>
+                  <p className="mt-1 text-sm text-muted">
+                    Save your list with a name and PIN so everyone in your home can log in, add items, and see
+                    what&apos;s been picked up.
+                  </p>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => setSaveMode("signup")}
-                className="h-12 flex-1 rounded-xl bg-leaf px-4 font-semibold text-leaf-ink"
+                className="mt-3 h-12 w-full rounded-xl bg-leaf font-semibold text-leaf-ink"
               >
                 Save my list
               </button>
-              <button
-                type="button"
-                onClick={() => setSaveMode("login")}
-                className="h-12 flex-1 rounded-xl border border-line px-4 font-semibold"
-              >
-                Log in
-              </button>
-            </div>
-          </section>
-        ) : null}
+            </section>
+          </>
+        )}
+
+        <section aria-labelledby="add-heading" className="mt-6">
+          <div className={saved ? "" : "mb-2 flex items-baseline justify-between gap-3"}>
+            <h2 id="add-heading" className={saved ? "sr-only" : "font-display text-xl font-bold"}>
+              Add to your list
+            </h2>
+            {!saved ? (
+              <p className="text-sm font-semibold text-muted" aria-live="polite">
+                {countLabel}
+              </p>
+            ) : null}
+          </div>
+          <AddItemForm onAdd={handleAdd} />
+        </section>
 
         {ready ? (
           <>
@@ -418,7 +505,7 @@ export function ShoppingList({ initialItems, listName }: Props) {
           </>
         ) : null}
 
-        <footer className="mt-12 flex flex-col items-center gap-2 border-t border-line pt-6">
+        {/* <footer className="mt-12 flex flex-col items-center gap-2 border-t border-line pt-6">
           {saved ? (
             <form action={logOut}>
               <button
@@ -441,8 +528,23 @@ export function ShoppingList({ initialItems, listName }: Props) {
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
           </p>
-        </footer>
+        </footer> */}
       </main>
+
+      <footer className="mt-12 border-t border-line px-4 pb-[calc(env(safe-area-inset-bottom)+5rem)] pt-6 text-center">
+        <p className="text-sm text-muted">
+          Powered by{" "}
+          <a
+            href="https://www.robowebsolutions.com"
+            target="_blank"
+            rel="noopener"
+            className="inline-flex min-h-11 items-center font-semibold text-ink underline decoration-leaf decoration-2 underline-offset-4 hover:text-leaf"
+          >
+            Robo Web Solutions
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        </p>
+      </footer>
 
       {saveMode ? (
         <SaveDialog
