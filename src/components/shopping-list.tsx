@@ -435,7 +435,7 @@ export function ShoppingList({ initialItems, listName }: Props) {
           </>
         )}
 
-        <section aria-labelledby="add-heading" className="mt-6">
+        {/* <section aria-labelledby="add-heading" className="mt-6">
           <div className={saved ? "" : "mb-2 flex items-baseline justify-between gap-3"}>
             <h2 id="add-heading" className={saved ? "sr-only" : "font-display text-xl font-bold"}>
               Add to your list
@@ -447,7 +447,20 @@ export function ShoppingList({ initialItems, listName }: Props) {
             ) : null}
           </div>
           <AddItemForm onAdd={handleAdd} />
-        </section>
+        </section> */}
+
+        {/* Heading scrolls away; the add bar below it pins under the header once it reaches the top. */}
+        <div className={saved ? "mt-4" : "mt-6 mb-1 flex items-baseline justify-between gap-3"}>
+          <h2 className={saved ? "sr-only" : "font-display text-xl font-bold"}>Add to your list</h2>
+          {!saved ? (
+            <p className="text-sm font-semibold text-muted" aria-live="polite">
+              {countLabel}
+            </p>
+          ) : null}
+        </div>
+        <div className="sticky top-[calc(env(safe-area-inset-top)+4.25rem+1px)] z-10 -mx-4 bg-paper/95 px-4 pt-2 backdrop-blur">
+          <AddItemForm onAdd={handleAdd} />
+        </div>
 
         {ready ? (
           <>
